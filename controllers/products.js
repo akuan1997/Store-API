@@ -3,10 +3,16 @@ const Product = require('../models/product');
 const getAllProductsStatic = async (req, res) => {
     // throw new Error('testing async error')  // testing
     // const products = await Product.find({});
+    const search = 'be'
     const products = await Product.find({
-        // featured:true,
-        name: 'vase table'
-    });
+        // search = 'a'，匹配任何含有a的name
+        // $options: 'i' → 忽略大小寫（case-insensitive）
+        name: { $regex: search, $options: 'i'},
+    })
+    // const products = await Product.find({
+    //     // featured:true,
+    //     name: 'vase table'
+    // });
     res.status(200).json({ products, nbHits: products.length })
 }
 const getAllProducts = async (req, res) => {
@@ -22,7 +28,7 @@ const getAllProducts = async (req, res) => {
         queryObject.company = company
     }
     if (name) {
-        queryObject.name = name
+        queryObject.name = { $regex: name, $options: 'i'}
     }
     console.log(queryObject)
     const products = await Product.find(queryObject)
