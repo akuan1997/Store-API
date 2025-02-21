@@ -8,7 +8,7 @@ const getAllProductsStatic = async (req, res) => {
         // search = 'a'，匹配任何含有a的name
         // $options: 'i' → 忽略大小寫（case-insensitive）
         // name: { $regex: search, $options: 'i'},
-    }).sort('price')
+    }).sort('price -name')
     // const products = await Product.find({
     //     // featured:true,
     //     name: 'vase table'
@@ -18,7 +18,7 @@ const getAllProductsStatic = async (req, res) => {
 const getAllProducts = async (req, res) => {
     // console.log(req.query)  // 記得是query不是body
     // const products = await Product.find(req.query)
-    const { featured, company, name } = req.query
+    const { featured, company, name, sort } = req.query
     const queryObject = {}
 
     if (featured) {
@@ -31,7 +31,15 @@ const getAllProducts = async (req, res) => {
         queryObject.name = { $regex: name, $options: 'i'}
     }
     console.log(queryObject)
-    const products = await Product.find(queryObject)
+    // const products = await Product.find(queryObject)
+    let result = Product.find(queryObject)
+    if (sort) {
+        const sortList = sort.split(',').join(' ')
+        result = result.sort(sortList)
+    } else {
+        result = result.sort('createdAt')
+    }
+    const products = await result
     res.status(200).json({ products, nbHits: products.length })
 }
 
