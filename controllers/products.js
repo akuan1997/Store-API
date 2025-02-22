@@ -4,11 +4,10 @@ const getAllProductsStatic = async (req, res) => {
     // throw new Error('testing async error')  // testing
     // const products = await Product.find({});
     // const search = 'be'
-    const products = await Product.find({
-        // search = 'a'，匹配任何含有a的name
-        // $options: 'i' → 忽略大小寫（case-insensitive）
-        // name: { $regex: search, $options: 'i'},
-    }).select('name price')
+    const products = await Product.find({})
+        .select('name price')
+        .limit(3)
+        .skip(1)  // 跳過第一個，一樣會顯示三個 (limit=3)
     // const products = await Product.find({
     //     // featured:true,
     //     name: 'vase table'
@@ -43,6 +42,11 @@ const getAllProducts = async (req, res) => {
         const fieldsList = fields.split(',').join(' ')
         result = result.select(fieldsList)
     }
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || 10
+    const skip = (page - 1) * limit
+    result = result.skip(skip).limit(limit)
+
     const products = await result
     res.status(200).json({ products, nbHits: products.length })
 }
