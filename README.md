@@ -126,7 +126,3 @@ Used Mongoose schema validation with enum values to ensure data integrity.
 ## 📄 License
 
 MIT
-
----
-
-*This project was developed as part of my backend development portfolio to demonstrate proficiency in building RESTful APIs with advanced querying capabilities.*
